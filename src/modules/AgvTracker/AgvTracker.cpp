@@ -224,7 +224,12 @@ void AgvTracker::robustTracking(int count)
     //tracking with pytamid or not
     int start_level = (count == 0 || loseDist > 50.0f) ? pyramid_level - 1 : 0;
 
-    if (count < 10)
+    int isIcpTracking = 0;
+    cout << "[priDist]" << priDist << endl;
+    if (priDist > 20.0f)
+        isIcpTracking = 5;
+
+    if (count < 5 || isIcpTracking--)
         pTracking->icpTracking(pCurFrame, PrioriPose);
     else
         pTracking->trackingSingleFrame(pCurFrame, PrioriPose, start_level, 0);

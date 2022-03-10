@@ -10,7 +10,7 @@ Tracking::Tracking(Map *pMap_) : pMap(pMap_),
                                  inited(false),
                                  noEmptyPixels(0),
                                  validPixels(0),
-                                 maxIterNum(40),
+                                 maxIterNum(20),
                                  smoothWeight(1.0f),
                                  thetaWeight(100.0f),
                                  firstOpt(true)
@@ -211,8 +211,8 @@ bool Tracking::trackingSingleFrame(Frame *pFrame, Pose &PriPose, int startLevel,
 
     assert(startLevel >= endLevel);
 
-    cout << "[before]tracking single frame, the PriPose is: " << PriPose.trans(0) << "+++" << PriPose.trans(1) << "++++" << PriPose.theta << endl;
-
+    cout << "[before]tracking single frame, the PriPose is: " << PriPose.trans(0) << "," << PriPose.trans(1) << "," << PriPose.theta << endl;
+    // cout << "[level]: " << startLevel << endl;
     smoothWeight = (pFrame->degenerative) ? 10.0f : 1.0f;
 
     curPose = PriPose;
@@ -679,6 +679,11 @@ bool Tracking::icpTrackingWithG_N(vector<cv::Point> &ref_pt_vec, vector<cv::Poin
         if (iter_num > 0 && iter_err > last_iter_err)
         {
             cout << "cost increased: " << iter_err << ", " << last_iter_err << endl;
+            // if (update.norm() > 200)
+            // {
+            //     cout << "cost is too big. refuse this pose." << endl;
+            //     return false;
+            // }
             break;
         }
         if (update.norm() < 1e-6)
