@@ -58,35 +58,35 @@ void Viewer::updateDemo(Pose& pose, cv::Mat& mask, cv::Mat& overlap, cv::Mat& tr
 
 void Viewer::run() {
 
-    pangolin::CreateWindowAndBind("AgvViewer", 1400, 700);
+    pangolin::CreateWindowAndBind("AgvViewer", 1400, 950);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //定义按钮面板
     //新建按钮和选择框
-    pangolin::CreatePanel("menu").SetBounds(0.0,1.0,0.0,0.2);
-    pangolin::Var<bool> menu("menu.test",true,true);
+    // pangolin::CreatePanel("menu").SetBounds(0.0,1.0,0.0,0.2);
+    // pangolin::Var<bool> menu("menu.test",true,true);
 
-    pangolin::OpenGlRenderState vis_camera(
-        pangolin::ProjectionMatrix(1024, 768, 400, 400, 512, 384, 0.1, 1000),
-        pangolin::ModelViewLookAt(0, -5, -10, 0, 0, 0, 0.0, -1.0, 0.0));
+    // pangolin::OpenGlRenderState vis_camera(
+    //     pangolin::ProjectionMatrix(1024, 768, 400, 400, 512, 384, 0.1, 1000),
+    //     pangolin::ModelViewLookAt(0, -5, -10, 0, 0, 0, 0.0, -1.0, 0.0));
 
 
     //map
     pangolin::View& map_image = pangolin::Display("map")
-      .SetBounds(0.0, 1.0 ,0.2, 0.7, 1.0f)
+      .SetBounds(0.0, 1.0 ,0.0, 0.7, 1.0f)
       .SetLock(pangolin::LockLeft, pangolin::LockBottom);
 
     //frame
     // float rate = 560.0f/340.0f;
     float rate = 560.0f/580.0f;
     pangolin::View& frame_image = pangolin::Display("frame")
-      .SetBounds(0.65, 1.0, 0.7, 1.0, rate)
+      .SetBounds(0.5, 1.0, 0.7, 1.0, rate)
       .SetLock(pangolin::LockLeft, pangolin::LockBottom);
 
     pangolin::View& overlap_image = pangolin::Display("overlap")
-      .SetBounds(0.0, 0.35, 0.7, 1.0, rate)
+      .SetBounds(0.0, 0.5, 0.7, 1.0, rate)
       .SetLock(pangolin::LockLeft, pangolin::LockBottom);
 
 

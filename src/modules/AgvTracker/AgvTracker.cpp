@@ -222,14 +222,14 @@ void AgvTracker::robustTracking(int count)
     double single_frame_use, dege_corr_use;
     clock_gettime(CLOCK_REALTIME, &start_singleframe);
     //tracking with pytamid or not
-    int start_level = (count == 0 || loseDist > 50.0f) ? pyramid_level - 1 : 0;
-
     int isIcpTracking = 0;
     cout << "[priDist]" << priDist << endl;
-    if (priDist > 20.0f)
+    if (priDist > 25.0f)
         isIcpTracking = 5;
 
-    if (count < 5 || isIcpTracking--)
+    int start_level = (count == 0 || loseDist > 50.0f) ? pyramid_level - 1 : 0;
+    // int start_level = (pCurFrame->degenerative) ? 0 : 2;
+    if (count < 5)
         pTracking->icpTracking(pCurFrame, PrioriPose);
     else
         pTracking->trackingSingleFrame(pCurFrame, PrioriPose, start_level, 0);

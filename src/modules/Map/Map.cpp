@@ -73,13 +73,13 @@ bool Map::loadAndInit(const std::string &map_name, int pyramid_level_)
     for (int l = 0; l < pyramid_level; l++)
     {
 
-        // cv::Mat ima = mapList[l]*255.0f;
-        // ima.convertTo(ima, CV_8UC1);
-        // string imaName = "map_" + to_string(l) + ".png";
-        // cv::imwrite(imaName, ima);
-
         cv::GaussianBlur(mapList[l], mapList[l],
                          cv::Size(gaussSize[l], gaussSize[l]), gaussSigma[l], gaussSigma[l]);
+                         
+        cv::Mat ima = mapList[l] * 255.0f;
+        ima.convertTo(ima, CV_8UC1);
+        string imaName = "map_" + to_string(l) + ".png";
+        cv::imwrite(imaName, ima);
 
         double maxPixel;
         cv::minMaxIdx(mapList[l], NULL, &maxPixel, NULL, NULL);

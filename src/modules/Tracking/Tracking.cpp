@@ -76,7 +76,7 @@ bool Tracking::init(int frameRows_, int frameCols_, int pyramid_level_)
 
     pFrameCorrect_xy = new float[OPTIMIZE_BUFFER_SIZE * 2];
 
-    searchLevel = pyramid_level - 1;
+    searchLevel = 0;
     optimateLevel = pyramid_level - 1;
     evaluLevel = 0;
 
@@ -171,20 +171,10 @@ bool Tracking::icpTracking(Frame *pFrame, Pose &PriPose)
 
     getNoEmptyPixels(pFrame->gaussMaskList[0]);
 
-    // if (noEmptyPixels < (MIN_NOEMPTY_PIXEL))
-    // {
-
-    //     cout << "[Tracking::trackingSingleFrame] non-empty pixel count too small: " << noEmptyPixels << endl;
-    //     pFrame->pose = curPose;
-    //     return false;
-    // }
-
     vector<cv::Point> local_map;
     vector<cv::Point> icp_frame;
     if (!getLocalMap(pFrame->rawMask, curParams, local_map, icp_frame))
         return false;
-    // cout << "local_map size:" << local_map.size() << endl;
-    // cout << "icp_map size:" << icp_frame.size() << endl;
 
     // icpTrackingWithKdtree(local_map, icp_frame);
     icpTrackingWithG_N(local_map, icp_frame);
@@ -213,7 +203,7 @@ bool Tracking::trackingSingleFrame(Frame *pFrame, Pose &PriPose, int startLevel,
 
     cout << "[before]tracking single frame, the PriPose is: " << PriPose.trans(0) << "," << PriPose.trans(1) << "," << PriPose.theta << endl;
     // cout << "[level]: " << startLevel << endl;
-    smoothWeight = (pFrame->degenerative) ? 10.0f : 1.0f;
+    smoothWeight = (pFrame->degenerative) ? 20.0f : 1.0f;
 
     curPose = PriPose;
     constPose = PriPose;
@@ -319,19 +309,19 @@ void Tracking::LM_Optimate(int level, float &refErr)
 
             if (newErr < refErr)
             {
-
                 //cout<<"accept lamda..."<<endl;
 
                 //accept lamda
                 if (lamda < 0.1f)
                     lamda = 0.0f;
                 else
-                    lamda *= (1.0f / 8.0f);
+                    lamda *= (1.0f / 2.0f);
 
                 if (newErr / refErr > 0.9995)
                     iterCount = maxIterNum;
 
                 curParams = newParams;
+                // cout << "iterCount: " << iterCount << "\n" << curParams << endl;
                 refErr = newErr;
 
                 break;
@@ -345,7 +335,7 @@ void Tracking::LM_Optimate(int level, float &refErr)
                 if (lamda < 0.1f)
                     lamda = 0.1f;
                 else
-                    lamda *= 8.0f;
+                    lamda *= 2.0f;
 
                 if (deltaParams.norm() < 0.000001f)
                 {
@@ -678,7 +668,7 @@ bool Tracking::icpTrackingWithG_N(vector<cv::Point> &ref_pt_vec, vector<cv::Poin
         }
         if (iter_num > 0 && iter_err > last_iter_err)
         {
-            cout << "cost increased: " << iter_err << ", " << last_iter_err << endl;
+            cout << "cost increased: " << last_iter_err << "--->" << iter_err << endl;
             // if (update.norm() > 200)
             // {
             //     cout << "cost is too big. refuse this pose." << endl;

@@ -54,21 +54,21 @@ bool Tracking::degenerateCorrect(Frame *pFrame, float degeSpan, float degeTheta)
     {
         // if (!trackingSingleFrame(pFrame, candidatePoses[i], searchLevel, optimateLevel)) //?????is same as orbslam relocalization?
         //     continue;
-        if (!trackingSingleFrame(pFrame, candidatePoses[i], 0, 0))
+        if (!trackingSingleFrame(pFrame, candidatePoses[i], 1, 0))
         {
             continue;
         }
 
         float error = calcBidirectError(pFrame, evaluLevel); //????? why dont calc as calcCorrectError
-        float score = error;
-        // float score = error * (0.1f * abs(candidateSpans[i]) + 0.9f);
+        // float score = error;
+        float score = error * (0.9f * abs(candidateSpans[i]) + 0.1f);
 
         if (minScore < 0.0f || score < minScore)
         {
 
             minScore = score;
             bestPose = pFrame->pose;
-            cout << "[after]tracking single frame, the PriPose is: " << bestPose.trans(0) << "+++" << bestPose.trans(1) << "++++" << bestPose.theta << endl;
+            cout << "[after ]tracking single frame, the PriPose is: " << bestPose.trans(0) << "," << bestPose.trans(1) << "," << bestPose.theta << endl;
         }
 
         cout << "bidirect error: " << error << "  span: " << candidateSpans[i] << "  score: " << score << endl;
@@ -222,12 +222,6 @@ void Tracking::getCandidatePose(Frame *pFrame, float degeSpan, float degeTheta)
                 minErr = corPixelCount;
             }
         }
-
-        // Pose pose_l0(trans_x, trans_y, pFrame->pose.theta);
-        // cv::Mat frameWindow = ImgProcess::drawFrameToMap(pFrame->gaussMaskList[0], pMap->mapList[0], pose_l0);
-        // cv::imshow("current correct pose", frameWindow);
-        // cv::waitKey(100);
-        // getchar();
     }
 
     cout << "candidate pose num: " << candidatePoses.size() << endl;
@@ -292,6 +286,7 @@ float Tracking::calcBidirectError(Frame *pFrame, int level)
         {
 
             float framePixel = framePtr[j];
+            if(framePixel < 0.1f) continue;
 
             float x = i + 0.5f;
             float y = j + 0.5f;
