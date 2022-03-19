@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     // pAgvTracker->data_path = "../data/data_test/";
 
     pAgvTracker->map_name = "/media/lzh/0E88335488333993/jingData/f5map_global3.png";
-    pAgvTracker->data_path = "/media/lzh/0E88335488333993/jingData/data_test2/";
+    pAgvTracker->data_path = "/media/lzh/0E88335488333993/jingData/data_test4/";
 
     pAgvTracker->initTracker();
 

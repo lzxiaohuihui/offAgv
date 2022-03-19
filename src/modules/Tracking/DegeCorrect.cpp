@@ -54,7 +54,7 @@ bool Tracking::degenerateCorrect(Frame *pFrame, float degeSpan, float degeTheta)
     {
         // if (!trackingSingleFrame(pFrame, candidatePoses[i], searchLevel, optimateLevel)) //?????is same as orbslam relocalization?
         //     continue;
-        if (!trackingSingleFrame(pFrame, candidatePoses[i], 1, 0))
+        if (!trackingSingleFrame(pFrame, candidatePoses[i], 0, 0))
         {
             continue;
         }
@@ -176,7 +176,7 @@ void Tracking::getCandidatePose(Frame *pFrame, float degeSpan, float degeTheta)
     candidatePoses.clear();
     candidateSpans.clear();
 
-    float correctStep = pMap->gaussSize[searchLevel];
+    float correctStep = 0.5f * pMap->gaussSize[searchLevel];
     float factor = pow(2, -searchLevel);
 
     bool minSearch = false;
